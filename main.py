@@ -29,51 +29,54 @@ class Game:
 
     def __init__(self, palavra):
         self.palavra = palavra
-        self.palavra_erradas = []
-        self.letras_escolhidas = []
-        
-        
-
-    def tamanhoDaPalavra(self):
-        tamanho = ['_' for i in self.palavra]
-        return tamanho
+        self.letras_erradas = []
+        self.letras_escolhidas = ['_' for i in self.palavra]
     
     def status(self):
         print("----------------Bem-Vindo ao Jogo da Forca----------------\n")
-        print(f"Palavra: {self.tamanhoDaPalavra()}\n")
-        print(f"Palavras Erradas: {self.palavra_erradas}\n")
+        print(f"Palavra: {' '.join(self.letras_escolhidas)}\n")
+        print(f"Palavras Erradas: {self.letras_erradas}\n")
+
 
     def verificaLetra(self,letra):
 
         if letra in self.palavra:
-           
-           # Isto deve estar em outro método
-           '''
-            for i, caractere in enumerate(self.palavra):
-                    if caractere == letra:
-                        self.tamanhoDaPalavra()[i] = letra
-            
-           ''' 
-                       
+            for idx, char in enumerate(self.palavra):
+                if char == letra:
+                    self.letras_escolhidas[idx] = letra
         else:
-            self.palavra_erradas.append(letra)   
+            self.letras_erradas.append(letra)  
+
+    def hangman_over(self):
+        return self.win() or (len(self.letras_erradas) == 6)
 
     def win(self):
-        if '_' not in self.tamanho_palavra:
+        if '_' not in self.letras_escolhidas:
             return True
         return False
     
+    def getPalavra(self):
+        return self.palavra
 
 def main():
 
     clear_screen()
     
     game1 = Game(listaPalavras())
-    game1.status()  
 
-    letra = input("Digite uma letra: ")
-    game1.verificaLetra(letra)
+    while not game1.hangman_over():
+        game1.status()  
 
+        letra = input("Digite uma letra: ")
+        game1.verificaLetra(letra)
+
+
+    if game1.win():
+        print("Parabens você venceu!!\n")
+        print(f"A Palavra era: {game1.getPalavra().upper()}")
+    else:
+        print("Você perdeu!!")
+        print(f"A Palavra era: {game1.getPalavra().upper()}")
 
 if __name__ == "__main__":
     main()
